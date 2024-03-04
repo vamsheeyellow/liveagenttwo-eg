@@ -1,0 +1,772 @@
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Product List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+</head>
+
+<body>
+    <style>
+        @font-face {
+            font-family: 'proxima_nova_rgregular';
+            src: url('https://litmus.com/fonts/Emails/proximanova-regular-webfont.eot');
+            src: url('https://litmus.com/fonts/Emails/proximanova-regular-webfont.eot?#iefix') format('embedded-opentype'),
+                url('https://litmus.com/fonts/Emails/proximanova-regular-webfont.woff') format('woff'),
+                url('https://litmus.com/fonts/Emails/proximanova-regular-webfont.ttf') format('truetype'),
+                url('https://litmus.com/fonts/Emails/proximanova-regular-webfont.svg#proxima_nova_rgregular') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body { 
+            font-family: 'proxima_nova_rgregular', Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            padding: 0;
+            margin-left: 2px;
+            box-sizing: border-box;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #385072 !important;
+            color: white;
+        }
+
+        .select2-container--default .select2-results>.select2-results__options {
+            max-height: 250px;
+            height: 250px;
+            top: 0%;
+            top: 0;
+        }
+
+        #select2-games-container.select2-selection__rendered {
+            margin-left: 2px;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+
+        #select2-country-container.select2-selection__rendered {
+            margin-left: 2px;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+
+        .select2-selection--multiple {
+            overflow: hidden !important;
+            height: auto !important;
+        }
+
+        .select2-choices {
+            min-height: 250px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        h5 {
+            font-family: Tahoma;
+        }
+
+        h6 {
+            color: black;
+            font-weight: bold;
+            margin-bottom: 0px;
+            padding-left: 2px;
+        }
+
+        .input-field {
+            width: 95%;
+            max-width: 95%;
+            font-size: 12px;
+            padding-left: 10px;
+            margin-left: 3px;
+            border-radius: 2px;
+            border-width: 1px;
+            /* box-shadow: 5px 10px #888888; */
+            /* border: #000000; */
+            border-color: #a1a1a1;
+            display: inline-flexbox;
+            height: 25px;
+        }
+
+        .invalid-placeholder {
+            background-color: #fcddcb;
+            columns: white;
+        }
+
+        ::-webkit-input-placeholder {
+            /* Edge */
+            color: rgb(68, 67, 67);
+            font-size: 12px;
+        }
+
+        :-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: rgb(68, 67, 67);
+            font-size: 12px;
+        }
+
+        ::placeholder {
+            color: rgb(68, 67, 67);
+            font-size: 12px;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .select-css {
+            max-width: 70%;
+        }
+
+
+        form {
+            width: 300px;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .value-button {
+            display: inline-block;
+            border: 1px solid #ddd;
+            margin: 0px;
+            width: 40px;
+            height: 20px;
+            text-align: center;
+            vertical-align: middle;
+            padding: 11px 0;
+            background: #eee;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .value-button:hover {
+            cursor: pointer;
+        }
+
+        form #decrease {
+            margin-right: -4px;
+            border-radius: 8px 0 0 8px;
+        }
+
+        form #increase {
+            margin-left: -4px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        form #input-wrap {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        input#number {
+            text-align: center;
+            border: none;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            margin: 0px;
+            width: 15%;
+            max-width: 20%;
+            height: 40px;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: left;
+            position: relative;
+            width: 300px;
+        }
+
+        .cart-header h4 {
+            text-align: left;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        .cart-header input {
+            position: absolute;
+            right: 0;
+            margin-top: 0px;
+        }
+
+        .glyphicon {
+            float: right;
+            margin-left: 3px;
+            cursor: pointer;
+        }
+
+        .quantity-input {
+            width: 3%;
+            position: absolute;
+            margin-bottom: 2px;
+            height: 20px;
+        }
+
+        .demo-wrap {
+            position: relative;
+            height: 100vh;
+        }
+
+        .demo-wrap:before {
+            content: ' ';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            /* background: url("https://cdn.yellowmessenger.com/J8kENYr7XAWL1620791192314.jpg"); */
+            /* background-repeat: no-repeat;
+            background-position: 50% 0;
+            background-size: cover; */
+        }
+
+        .demo-content {
+            position: relative;
+        }
+
+        #submit-button {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        var language = "ar"
+        window.addEventListener('load', (event) => {
+            console.log('page is fully loaded');
+            let { lang, status } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+            language = lang
+            document.getElementById("title").innerHTML = language == "ar" ? "يرجى ملء التفاصيل التالية لتوصيلك بفريق دعم العملاء لدينا 😊" : "Please fill in the following details to connect you to our Customer Support team 😊"
+            document.getElementById("name-header").innerHTML = language == "ar" ? "الإسم" : "Name"
+            document.getElementById("email-header").innerHTML = language == "ar" ? "عنوان بريدك الالكتروني" : "Email"
+            document.getElementById("payment-header").innerHTML = language == "ar" ? "وسيلة الدفع" : "Payment Channel"
+            document.getElementById("game-header").innerHTML = language == "ar" ? "لعبة/منتج" : "Product/Game"
+            document.getElementById("name").placeholder = language == "ar" ? "من فضلك أدخل إسمك" : "Please enter your name"
+            document.getElementById("email").placeholder = language == "ar" ? "رجاءا أدخل بريدك الإلكتروني" : "Please enter your email"
+            document.getElementById("product-option").innerHTML = language == "ar" ? "الرجاء تحديد قناة الدفع الخاصة بك" : "Please select your payment channel"
+            document.getElementById("game-option").innerHTML = language == "ar" ? "الرجاء تحديد اللعبة / المنتج الخاص بك" : "Please select your game/product"
+            document.getElementById("submit-button").value = language == "ar" ? "إرسال" : "Submit"
+            if (status == "offline") {
+                const message = document.createElement("h6")
+                message.innerHTML = language == "ar" ? "رسالة" : "Message"
+                message.id = "message-header"
+                document.getElementById("offline-message").appendChild(message)
+                const messageBox = document.createElement("textarea")
+                messageBox.type = "text"
+                messageBox.id = "user-message"
+                messageBox.name = "message"
+                messageBox.classList.add("input-field")
+                messageBox.style.height = "50px"
+                document.getElementById("offline-message").appendChild(messageBox)
+                const attachment = document.createElement("h6")
+                attachment.innerHTML = language == "ar" ? "مرفقات" : "Attachment"
+                attachment.id = "attachment-header"
+                document.getElementById("offline-message").appendChild(attachment)
+                const attachmentInput = document.createElement("input")
+                attachmentInput.type = "file"
+                attachmentInput.classList.add("form-control")
+                attachmentInput.classList.add("input-field")
+                attachmentInput.style.height = "30px"
+                attachmentInput.id = "read-file"
+                document.getElementById("offline-message").appendChild(attachmentInput)
+            }
+            
+        });
+
+
+
+        var totalSelection = []
+        var count = 0
+        var countrys = {
+            "Egypt": ["Fawry",
+"Vodafone Cash",
+"Orange Money",
+"Card Payments",
+"OneCard",
+"Meeza Card",
+"Masary/Aman/Momken",
+"n/a"]
+        }
+
+        $(document).ready(function () {
+            // var gamesArray = ["4Fun","8 Ball Pool","9Splay","Ahlan","APEX Legends Mobile","Asphalt 9","Azizi","Badlanders","Bagelcode","Bat Messenger","Bermuda","Bigo Live","Bloomer","Call of Duty Mobile","Carrom Gold","Club Vegas","CMGE","Conquer Online","Cooking Adventure","Diablo Immortal","Domino Cafe","Dragon Brawlers","Eear","Fashion Fantasy","Fincon","Free Fire","Gaga","Game of Sultans","Gogo Live","Grampus","Gunship Battle Total Warfare","Hago","Hellow","Hero Evolved","Hiya","HK Xinmo","Idle Gog","Joy","Kafu","King of Avalon","Knight of Desert","League Of Legends","League of Legends: Wild Rift","Legends of Runeterra","Light Chat","Liu Li","Live.me","LivU","Long Wan","Lords Mobile: Kingdom Wars","Lost Sanctuary: Eternal Origin","Ludo Club","MeeGoo","Mico","Miniclip","Mirage: Perfect Skyline","Mixu","Mobile Legends: Bang Bang","Modern Combat 5","Modern Strike Online","Monsters & Puzzles","MU ORIGIN 2","Mydio Sing","Nimo TV","NJ Interactive","Nordeus","OHLA","Ola Chat","Omega Video Call","Omlet Arcade","Onmyoji Arena","Orangenat.com","Payletter","Pita Live","Ragnarok M","Roseland","Seeya","Social APP","StarMaker","State of Survival","Super Sus","Tamashi: Rise of Yokai","Teen Patti Gold","The War of Genesis: Battle of Antaria","Thetan Arena","Tinder Direct top up","Tippin.TV","Toptop","Transsion","Tumile","Turbo VPN","UMe Live","Valorant","Vegas Slots Master","VIVA","WeSing","World War Heroes","Xin dong","YIYO","Yoho","Yome Live","Youzoo","YoYo","Yumy","Zepeto","Fortnite Vouchers","Garena Shells Vouchers","Google Play Vouchers","iTunes Vouchers","Jawaker Vouchers","Minecraft","Netflix Vouchers","Nintendo eShop","Playstation Vouchers","PSN Vouchers (UAE)","PUBG Mobile UC Vouchers","Shahid Vouchers","Spotify Vouchers","StarzPlay Vouchers","Steam Wallet Code Vouchers","Tango Vouchers","Tinder Voucher","Uber Gift Codes","VIP Baloot Voucher","Yalla Live Vouchers","n/a"]
+            var gamesArray = [
+  "4Fun",
+  "8 Ball Pool",
+  "9Splay",
+  "Ahlan",
+  "AloParty",
+  "APEX Legends Mobile",
+  "Asphalt 9",
+  "Azizi",
+  "Badlanders",
+  "Bagelcode",
+  "Bat Messenger",
+  "Bermuda",
+  "Bigo Live",
+  "Bloomer",
+  "Brawl Stars",
+  "Call of Duty Mobile",
+  "Carrom Gold",
+  "Clash of Clans",
+  "Clash Royale",
+  "Club Vegas",
+  "CMGE",
+  "Conquer Online",
+  "Cooking Adventure",
+  "Diablo Immortal",
+  "Domino Cafe",
+  "Dragon Brawlers",
+  "Eear",
+  "Farlight 84",
+  "Fashion Fantasy",
+  "FIFA Mobile",
+  "Fincon",
+  "Free Fire",
+  "Gaga",
+  "Game of Sultans",
+  "Gogo Live",
+  "Grampus",
+  "Gunship Battle Total Warfare",
+  "Hago",
+  "Hay Day",
+  "Hellow",
+  "Hero Evolved",
+  "Hiya",
+  "HK Xinmo",
+  "Honey Jar",
+  "Idle Gog",
+  "Joy",
+  "Kafu",
+  "King of Avalon",
+  "Knight of Desert",
+  "League Of Legends",
+  "League of Legends: Wild Rift",
+  "Legends of Runeterra",
+  "Light Chat",
+  "Liu Li",
+  "Live.me",
+  "LivU",
+  "Long Wan",
+  "Lords Mobile: Kingdom Wars",
+  "Lost Sanctuary: Eternal Origin",
+  "Ludo Club",
+  "MeeGoo",
+  "Mico",
+  "Miko Era: Twelve Myths",
+  "Miniclip",
+  "Mirage: Perfect Skyline",
+  "Mixu",
+  "Mobile Legends: Bang Bang",
+  "Modern Combat 5",
+  "Modern Strike Online",
+  "Monsters & Puzzles",
+  "MU ORIGIN 2",
+  "Mydio Sing",
+  "n/a",
+  "Nimo TV",
+  "NJ Interactive",
+  "Nordeus",
+  "OHLA",
+  "Ola Chat",
+  "Omega Video Call",
+  "Omlet Arcade",
+  "Onmyoji Arena",
+  "Orangenat.com",
+  "Payletter",
+  "Pita Live",
+  "Pocket - Avatar Voice",
+  "Ragnarok M",
+  "Rise of Elf",
+  "Roseland",
+  "Seeya",
+  "Social APP",
+  "Sodo Live",
+  "Starfall Fantasy: Neverland",
+  "StarMaker",
+  "State of Survival",
+  "Super Sus",
+  "Tamashi: Rise of Yokai",
+  "Tamatem",
+  "Teen Patti Gold",
+  "Tevi",
+  "The War of Genesis: Battle of Antaria",
+  "Thetan Arena",
+  "Tinder Direct top up",
+  "Tippin.TV",
+  "Toptop",
+  "Transsion",
+  "Tumile",
+  "Turbo VPN",
+  "UMe Live",
+  "Valorant",
+  "Vegas Slots Master",
+  "Viu",
+  "VIVA",
+  "WeSing",
+  "Westward Adventure",
+  "World War Heroes",
+  "Xin dong",
+  "YIYO",
+  "Yoho",
+  "Yome Live",
+  "Youzoo",
+  "YoYo",
+  "Yumy",
+  "Zepeto",
+  "Fortnite Vouchers",
+  "Garena Shells Vouchers",
+  "Google Play Vouchers",
+  "HyperconnectInc - Azar",
+  "iTunes Vouchers",
+  "Jawaker Vouchers",
+  "Kammelna",
+  "Minecraft",
+  "Netflix Vouchers",
+  "Nintendo eShop",
+  "Playstation Vouchers",
+  "PSN Vouchers (UAE)",
+  "PUBG Mobile UC Vouchers",
+  "Shahid Vouchers",
+  "Spotify Vouchers",
+  "StarzPlay Vouchers",
+  "Steam Wallet Code Vouchers",
+  "Tango Vouchers",
+  "Tinder Voucher",
+  "Uber Gift Codes",
+  "Undawn",
+  "VIP Baloot Voucher",
+  "Xbox Game Pass (US)",
+  "Yalla Live Vouchers",
+  "Yalla Ludo",
+  "Trovo",
+  "Hello Yo",
+  "Poppo",
+  "EA SPORTS FC Mobile",
+  "LionsChat",
+  "Similar",
+  "Party Star",
+  "Timo",
+  "Sea of Conquest: Pirate War",
+  "Ninja Legend Full Fire",
+  "第七班的傳說",
+  "Conquer Online Arabic",
+  "Conquer Online PC"
+];
+
+            var countriesArray = ["Egypt"]
+                $('#games').select2({
+                    data: gamesArray
+                });
+    
+                $('#country').select2({
+                    data: ["Fawry",
+"Vodafone Cash",
+"Orange Money",
+"Paypal",
+"Card Payments",
+"OneCard",
+"Meeza Card",
+"Masary/Aman/Momken",
+"n/a"]
+                })
+            });
+
+        function back() {
+            window.parent.postMessage(
+                JSON.stringify({
+                    event_code: "ym-client-event",
+                    data: "@go-back"
+                }),
+                "*"
+            );
+        }
+
+        function nameHandler() {
+            const name = document.getElementById("name")
+            if (document.getElementById("name").value.length == 0) {
+                name.classList.add('invalid-placeholder');
+                document.getElementById("invalid-message").innerHTML = language == "ar" ? "الاسم مطلوب للتواصل مع وكيل" : "Name is required to connect an agent!"
+            }
+            else {
+                name.classList.remove("invalid-placeholder");
+                document.getElementById("invalid-message").innerHTML = ""
+            }
+        }
+
+        function emailHandler() {
+            const email = document.getElementById("email")
+            if (document.getElementById("email").value.length == 0) {
+                email.classList.add('invalid-placeholder');
+                document.getElementById("invalid-message").innerHTML = language == "ar" ? "البريد الإلكتروني مطلوب للتواصل مع وكيل" : "Email is required to connect an agent!"
+            }
+            else {
+                email.classList.remove("invalid-placeholder");
+                document.getElementById("invalid-message").innerHTML = ""
+            }
+        }
+
+        
+
+        function messageHandler() {
+            console.log("came into message handler")
+            const message = document.getElementById("user-message")
+            if (message.value.length == 0) {
+                // message.classList.add('invalid-placeholder');
+                document.getElementById("invalid-message").innerHTML = language == "ar" ? "" : "A message should be sent to connect to an agent"
+            }
+            else {
+                // message.classList.remove("invalid-placeholder");
+                document.getElementById("invalid-message").innerHTML = ""
+            }
+        }
+
+        function submit() {
+            const emailRegex = /[A-Za-z\d]+([-._+]?[A-Za-z\d]+)*@[A-Za-z\d]+(-?[A-Za-z\d])*([.][A-Za-z\d]{2,})+/gi
+            var data = {
+                "name": document.getElementById("name").value,
+                "email": document.getElementById("email").value,
+                "payment": document.getElementById("country").value,
+                "games": document.getElementById("games").value,
+            }
+            if (document.getElementById("user-message")) {
+                data.message = document.getElementById("user-message").value
+            }
+            const name = document.getElementById("name")
+            const email = document.getElementById("email")
+            const country = document.getElementById("country")
+            const games = document.getElementById("games")
+            const message = document.getElementById("user-message")
+            const submit = document.getElementById("submit-button")
+            // console.log(message.value, "Message value after submitting")
+            if (data["payment"] === "null" || data.games === "null" || data.email.length == 0 || data.name.length == 0 || !emailRegex.test(data.email)) {
+                if (data.name.length == 0) {
+                    document.getElementById("invalid-message").innerHTML = language == "ar" ? "الاسم مطلوب للتواصل مع وكيل" : "Name is required to connect an agent!"
+                    name.placeholder = language == "ar" ? 'الاسم مطلوب للتواصل مع وكيل' : "Name is required to connect an agent"
+                    name.classList.add('invalid-placeholder');
+                    email.classList.remove("invalid-placeholder");
+                    message.classList.remove("invalid-placeholder")
+                    name.focus();
+                }
+                else if (data.email.length == 0) {
+                    document.getElementById("invalid-message").innerHTML = language == "ar" ? "البريد الإلكتروني مطلوب للتواصل مع وكيل" : "Email is required to connect an agent!"
+                    email.placeholder = language == "ar" ? 'البريد الإلكتروني مطلوب للتواصل مع وكيل' : "Email is required to connect an agent"
+                    email.classList.add('invalid-placeholder');
+                    name.classList.remove("invalid-placeholder");
+                    message.classList.remove("invalid-placeholder")
+                    email.focus();
+                }
+                else if (!emailRegex.test(data.email)) {
+                    document.getElementById("invalid-message").innerHTML = language == "ar" ? "مطلوب بريد إلكتروني صالح  للتواصل مع وكيل" : "Valid email is required to connect an agent"
+                    email.placeholder = language == "ar" ? 'مطلوب بريد إلكتروني صالح  للتواصل مع وكيل' : "Valid email is required to connect an agent"
+                    name.classList.remove("invalid-placeholder");
+                    message.classList.remove("invalid-placeholder")
+                    email.focus();
+                }
+                console.log("Empty/Invalid values are present in the form ")
+            }
+            else {
+                try {
+                    var file = document.querySelector("#read-file").files[0];
+                    console.log("File value", file)
+                    if (file != undefined) {
+                        const fileBlob = new Blob([file], { type: 'audio/m4u' })
+                        console.log("File uploaded", fileBlob.toString().length)
+                        let { env } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+                        let authorization = env == "sandbox" ? "Bearer aba1bc0c9163ffb006ffc2f24779f812fbc9294c224785ede2a899dad0b28e63" : "Bearer 41d10c00f30cab3874036dbd93de44f17d9bc3e22d98b2a8fc361aab75ba3bfd"
+                        var myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/binary");
+                        myHeaders.append("Authorization", authorization);
+                        myHeaders.append("Cookie", "__cfruid=ac5013aec99a52bd2b8af09da3ee3120b9711fb6-1622516380; _zendesk_session=BAh7CEkiD3Nlc3Npb25faWQGOgZFVEkiJTAzNDdkMmU1MTA3Y2JmMWIzOTc0MDQyOGE2NTcyYmEwBjsAVEkiDGFjY291bnQGOwBGaQMR95xJIgpyb3V0ZQY7AEZpA582Ow%3D%3D--5e799ad44877306f7c22b2ab9da3034f88c358c3");
+
+                        console.log("this is the variable", data)
+                        document.getElementById("submit-button").disabled = true;
+                        name.disabled = true;
+                        email.disabled = true;
+                        country.disabled = true;
+                        games.disabled = true;
+                        submit.disabled = true;
+
+                        
+                        var requestOptions = {
+                            method: 'POST',
+                            headers: myHeaders,
+                            body: fileBlob,
+                            redirect: 'follow'
+                        };
+
+                        
+                        const url = env == "sandbox" ? `https://codapayment1601020012.zendesk.com/api/v2/uploads?filename=user_upload` : `https://codapayment.zendesk.com/api/v2/uploads?filename=user_upload`
+                        fetch(url, requestOptions)
+                            .then(response => response.text())
+                            .then(result => {
+                                result = JSON.parse(result)
+                                console.log(result)
+                                const attachmentToken = result.upload.token
+                                data.attachmentToken = attachmentToken
+                                console.log("Data variable:", data)
+                                window.parent.postMessage(
+                                    JSON.stringify({
+                                        event_code: "ym-client-event",
+                                        data: JSON.stringify({
+                                            event: {
+                                                code: "user-data",
+                                                data: {
+                                                    userdetails: data,
+                                                },
+                                            },
+                                        }),
+                                    }),
+                                    "*"
+                                );
+                            })
+                            .catch(error => console.log('error', error));
+                    }
+                    else {
+                        name.disabled = true;
+                        email.disabled = true;
+                        country.disabled = true;
+                        games.disabled = true;
+                        submit.disabled = true;
+                        data.attachmentToken = ""
+                        console.log(data)
+                        window.parent.postMessage(
+                            JSON.stringify({
+                                event_code: "ym-client-event",
+                                data: JSON.stringify({
+                                    event: {
+                                        code: "user-data",
+                                        data: {
+                                            userdetails: data,
+                                        },
+                                    },
+                                }),
+                            }),
+                            "*"
+                        );
+                    }
+                }
+                catch (e) {
+                    name.disabled = true;
+                    email.disabled = true;
+                    country.disabled = true;
+                    games.disabled = true;
+                    submit.disabled = true;
+                    // message.disabled = true;
+                    console.log("File not uploaded", e)
+                    data.attachmentToken = ""
+                    console.log("In catch", data)
+                    window.parent.postMessage(
+                        JSON.stringify({
+                            event_code: "ym-client-event",
+                            data: JSON.stringify({
+                                event: {
+                                    code: "user-data",
+                                    data: {
+                                        userdetails: data,
+                                    },
+                                },
+                            }),
+                        }),
+                        "*"
+                    );
+                }
+
+                // window.parent.postMessage(
+                //     JSON.stringify({
+                //         event_code: "ym-client-event",
+                //         data
+                //     }),
+                //     "*"
+                // );
+                // const { sender } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+                // self.location = `/zendesk.html?country=Indonesia&paymentType=${can["payment-type"]}&game=${can.games}&sender=${sender}`
+                // name=${can.name}&email=${can.email}&phone=${can.phone}&country=Indonesia&paymentType=${can["payment-type"]}&game=${can.games}&sender=${sender}`;
+            }
+        }
+    </script>
+    <div class="demo-wrap">
+        <div style="max-width: 600px;" class="demo-content center">
+            <img src="https://cdn.yellowmessenger.com/j4mnoorqT5BZ1620811806565.png" alt=""
+                style="float: right;max-width: 20px;max-height: 20px;margin-right: 5px;" onclick="back()">
+            <div id="selection" style="max-width: 90%;">
+                <center>
+                    <h6 id="title"
+                        style="color: black;text-align: left;margin-bottom: 25px;margin-top: 10px;font-size: 12px;">
+                        يرجى ملء التفاصيل التالية لتوصيلك بفريق دعم العملاء لدينا 😊
+                    </h6>
+                </center>
+            </div>
+            <p id="invalid-message" style="color:hsl(0, 100%, 50%);padding-left: 3px;font-size: 12px;"></p>
+            <div id="message"></div>
+            <h6 id="name-header">
+                الإسم<sup>*</sup>
+            </h6>
+            <input type="text" placeholder="Silakan Masukkan Nama Anda" class="input-field" id="name" name="name"
+                oninput="nameHandler()" required>
+            <h6 id="email-header">
+                عنوان بريدك الالكتروني<sup>*</sup>
+            </h6>
+            <input type="email" placeholder="Silakan Masukkan Email Anda" class="input-field" id="email" name="email"
+                oninput="emailHandler()" required>
+            <h6 id="payment-header">
+                وسيلة الدفعo<sup>*</sup>
+            </h6>
+            <select style="width: 96%;
+            max-width: 96%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 2px;
+            border-color: #a1a1a1;
+            height: 25px;" class="center" name="country" id="country">
+                <option id="product-option" value="null" disabled selected></option>
+            </select>
+            <!-- Pilih Saluran Pembayaran yang Anda inginkan -->
+            <br>
+            <h6 id="game-header">
+                لعبة/منتج<sup>*</sup>
+            </h6>
+            <select style="width: 96%;
+            max-width: 96%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 2px;
+            border-color: #a1a1a1;
+            height: 25px;" class="center" name="games" id="games">
+                <option id="game-option" value="null" disabled selected></option>
+            </select>
+            <br>
+            <div id="offline-message">
+            </div>
+            <input type="button" value="إرسال" id="submit-button" onclick="submit()"
+                style="max-width: 60%;margin: 15px auto;background-color: #385072;color: #ffffff"
+                class="btn btn-primary center" />
+        </div>
+    </div>
+</body>
+
+</html>
